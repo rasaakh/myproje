@@ -1,8 +1,8 @@
 /*-----------------------------------------------------------------------------------
 
-    Theme Name: YARA
+    Theme Name: MOROX
     Theme URI: http://
-    Description: Personal Portfolio Template
+    Description: The Multi-Purpose Onepage Template
     Author: gecdesigns    
 
 -----------------------------------------------------------------------------------*/
@@ -13,26 +13,25 @@
     1. PRELOADER
     2. SCROLLIT
     3. NAVBAR
-    4. COUNT TO
-    5. EASYPIECHART
-    6. SCROLL TO TOP 
-    7. PORTFOLIO
+    4. SCROLL TO TOP    
+    5. SKILL PROGRESS
+    6. PORTFOLIO
+    7. COUNT TO TRIGGER
     8. OWLCAROUSEL
     9. VALIDATOR
- 
 
 */
 
 $(function () {
     "use strict";
+    var wind = $(window);
 
     /*============= PRELOADER ============= */
-
     $(document).ready(function () {
 
+        // Fakes the loading setting a timeout
         setTimeout(function () {
             $('body').addClass('loaded');
-            $('.preloader').fadeOut(1500);
         }, 1500);
 
     });
@@ -44,65 +43,25 @@ $(function () {
         easing: 'swing', // the easing function for animation
         scrollTime: 600, // how long (in ms) the animation takes
         activeClass: 'active', // class given to the active nav element
-        onPageChange: null, // function(pageIndex) that is called when page is changed       
+        onPageChange: null, // function(pageIndex) that is called when page is changed
+        topOffset: -70 // offste (in px) for fixed top navigation
     });
 
-    /*===========  NAVBAR ===============*/
-    $(document).ready(function () {
-
-        'use strict';
-
-        var c, currentScrollTop = 0,
-            navbar = $('nav');
-
-        $(window).scroll(function () {
-            var a = $(window).scrollTop();
-            var b = navbar.height();
-
-            currentScrollTop = a;
-
-            if (c < currentScrollTop && a > b + b) {
-                navbar.addClass("scrollUp");
-            } else if (c > currentScrollTop && !(a <= b)) {
-                navbar.removeClass("scrollUp");
-            }
-            c = currentScrollTop;
-        });
-
+    /*============= NAVBAR ============= */
+    // Add navbar background color when scrolled
+    $(window).scroll(function () {
+        if ($(window).scrollTop() > 56) {
+            $(".navbar").addClass("nav-scroll");
+        } else {
+            $(".navbar").removeClass("nav-scroll");
+        }
     });
 
     // close navbar-collapse when a  clicked
     $(".navbar-nav a").on('click', function () {
         $(".navbar-collapse").removeClass("show");
     });
-});
 
-/*=========  COUNT TO =========*/
-var eventFired = false,
-    objectPositionTop = $('.counts').offset().top;
-$(window).on('scroll', function () {
-    var currentPosition = $(document).scrollTop() + 400;
-    if (currentPosition >= objectPositionTop && eventFired === false) {
-        eventFired = true;
-        $(".count").countTo({
-            speed: 5000,
-            refreshInterval: 80
-        });
-    }
-});
-
-/*=========  EASYPIECHART =========*/
-$(function () {
-    $('.chart').easyPieChart({
-        size: 140,
-        easing: 'easeOutBounce',
-        barColor: '#ff0066',
-        scaleColor: false,
-        lineCap: 'circle',
-        lineWidth: 12,
-        trackColor: '#333333',
-        animate: 500
-    });
 });
 
 /*============= SCROLL TO TOP ============= */
@@ -124,7 +83,30 @@ $(document).ready(function () {
     });
 });
 
+/*======== SKILL PROGRESS ========*/
+$(function () {
+    "use strict";
+    var windows = $(window);
+    windows.on('scroll', function () {
+        $(".progress-item span").each(function () {
+            var bottom_of_object = $(this).offset().top + $(this).outerHeight();
+            var bottom_of_windows = $(windows).scrollTop() + $(windows).height();
+            var myVal = $(this).attr('data-value');
+            if (bottom_of_windows > bottom_of_object) {
+                $(this).css({
+                    width: myVal
+                });
+            }
+        });
+    });
+});
+
+
 /*===========  PORTFOLIO ===============*/
+$(".simplefilter li").on("click", function () {
+    $(".simplefilter li").removeClass("active");
+    $(this).addClass("active");
+});
 var options = {
     animationDuration: 0.6,
     filter: "all",
@@ -142,37 +124,66 @@ var options = {
 var filterizd = $(".filtr-container").filterizr(options);
 filterizd.filterizr("setOptions", options);
 
+/*=========== COUNT TO TRIGGER =============*/
+var eventFired = false,
+    objectPositionTop = $('.counts').offset().top;
+$(window).on('scroll', function () {
+    var currentPosition = $(document).scrollTop() + 400;
+    if (currentPosition >= objectPositionTop && eventFired === false) {
+        eventFired = true;
+        $(".count").countTo({
+            speed: 5000,
+            refreshInterval: 80
+        });
+    }
+});
+
 /*========= OWLCAROUSEL =========*/
+// Service owlCarousel
+//=========================
+function services_carousel() {
+    var owl = $(".service-carousel");
+    owl.owlCarousel({
+        loop: true,
+        margin: 30,
+        responsiveClass: true,
+        navigation: true,
+        navText: ["<i class='fa fa-arrow-left'></i>", "<i class='fa fa-arrow-right'></i>"],
+        nav: true,
+        items: 3,
+        smartSpeed: 1000,
+        dots: false,
+        autoplay: true,
+        autoplayTimeout: 4000,
+        center: false,
+        responsive: {
+            0: {
+                items: 1
+            },
+            480: {
+                items: 1
+            },
+            760: {
+                items: 2
+            },
+            994: {
+                items: 3
+            }
+        }
+    });
+}
+services_carousel();
+
 
 // Testimonials owlCarousel
 //=========================
-$('.testi-carousel').owlCarousel({
+$('.testimonials .owl-carousel').owlCarousel({
     loop: true,
-    navText: ['<i class="fa fa-arrow-left"></i>', '<i class="fa fa-arrow-right"></i>'],
-    nav: true,
+    items: 1,
+    margin: 15,
+    mouseDrag: false,
     autoplay: true,
-    autoplayTimeout: 5000,
-    animateOut: 'fadeOut',
-    animateIn: 'fadeIn',
-    smartSpeed: 450,
-    margin: 20,
-    responsive: {
-        0: {
-            items: 1
-        },
-        768: {
-            items: 2
-        },
-        991: {
-            items: 3
-        },
-        1200: {
-            items: 3
-        },
-        1920: {
-            items: 3
-        }
-    }
+    smartSpeed: 500
 });
 
 /*========= VALIDATOR =========*/
